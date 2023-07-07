@@ -1,0 +1,18 @@
+/* eslint-disable prettier/prettier */
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { HydratedDocument } from 'mongoose';
+import { IUser } from 'src/interfaces/user';
+ 
+export type UserDocument = HydratedDocument<User>;
+ 
+@Schema()
+export class User implements IUser {
+ 
+    @Prop() password: string;
+ 
+    @Prop() login: string
+ 
+    @Prop() email: string
+
+    @Prop() id: string    
+ }   export const UserSchema = SchemaFactory.createForClass(User);
