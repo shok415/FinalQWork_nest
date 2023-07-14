@@ -20,6 +20,10 @@ export class UserService {
         return this.userModel.find();
     }
 
+    async checkRegUser(login: string): Promise<User[]> {
+        return this.userModel.find({login: login});
+    }
+    
     async login(user: User){
         const payload = {login: user.login, password: user.password};
         const userFromDb = await this.userModel.find({login:user.login, password:user.password})
@@ -33,7 +37,23 @@ export class UserService {
              login: userFromDb[0].login,
              id: userFromDb[0]._id,
              access_token: this.jwtService.sign(payload),
+             bookmarks: userFromDb[0].bookmarks,
+             email: userFromDb[0].email
           }
         }
+    }
+
+    async getUserById(id): Promise<User> {
+        return this.userModel.findById(id);
+    }
+
+    async addBookMark(data): Promise<any> {
+        let usrId = data.userId;
+        let postId = data.postId;
+        let userObj = this.userModel.findById(usrId)
+        let list1 = (await userObj).bookmarks
+        list1.push(postId)
+        let list = {"bookmarks":list1}
+        return this.userModel.findByIdAndUpdate(usrId, list);
     }
 }

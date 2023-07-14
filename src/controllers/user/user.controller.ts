@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, HttpStatus, Param, Post } from '@nestjs/common';
 import { User } from 'src/schemas/user';
 import { UserService } from 'src/services/user/user.service';
 
@@ -13,15 +13,41 @@ export class UserController {
         return this.userService.getAllUsers();
     }
 
+    @Post("/bookmark")
+    addToBookmark(@Body() data: any): Promise<any>  {
+        this.userService.addBookMark(data);
+        return data;
+             
+    }
+
     @Post()
     sendUser(@Body() data: User): Promise<User> {
-        return this.userService.sendUser(data);
+ 
+        return this.userService.checkRegUser(data.login).then((queryRes) => {
+            console.log('data reg', queryRes)
+            if (queryRes.length === 0) {
+                return this.userService.sendUser(data);
+            } else {
+                console.log('err - user is exists')
+                throw new HttpException({
+                    status: HttpStatus.CONFLICT,
+                    errorText: "Пользователь уже существует"
+                }, HttpStatus.CONFLICT)
+            }
+        });
+
     }
+
+
     @Post(":login")
     authUser(@Body() data: User, @Param('login') login): any  {
         return this.userService.login(data)
     }
 
+    @Get(":id")
+    getUserById(@Param('id') id): Promise<User> {
+        return this.userService.getUserById(id);
+    }
 
-    
+
 }
