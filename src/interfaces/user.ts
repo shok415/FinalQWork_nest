@@ -5,4 +5,5 @@ export interface IUser {
     email: string,
     id: string,
     bookmarks: Array<any>
+    registrationDate:string
 } 

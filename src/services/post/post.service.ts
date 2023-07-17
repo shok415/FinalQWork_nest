@@ -1,3 +1,8 @@
+/* eslint-disable prettier/prettier */
+/* eslint-disable prefer-const */
+/* eslint-disable prettier/prettier */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable prettier/prettier */
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -6,6 +11,7 @@ import { PostDto } from 'src/dto/post-dto';
 import { IComment } from 'src/interfaces/comment';
 import { IPost } from 'src/interfaces/post';
 import { PostDocument, Posts } from 'src/schemas/post';
+import { UserService } from '../user/user.service';
 
 @Injectable()
 export class PostService {
@@ -38,4 +44,7 @@ export class PostService {
         return this.postModel.findById(id);
     }
 
+    async getManyPostById(id): Promise<IPost[]> {
+        return this.postModel.find({ _id: id});
+    }
 }

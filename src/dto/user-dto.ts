@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { IUser } from "src/interfaces/user";
 
  
@@ -6,13 +7,15 @@ export class UserDto implements IUser {
     login: string;
     email: string;
     id: string;
-    bookmarks: Array<any>
+    bookmarks: Array<any>;
+    registrationDate:string
 
-    constructor(password,login,email,id,bookmarks){
+    constructor(password,login,email,id,bookmarks,registrationDate){
         this.password = password; 
         this.login = login; 
         this.email = email;
         this.id = id;
         this.bookmarks = bookmarks;
+        this.registrationDate = registrationDate
     }
  }

@@ -1,4 +1,6 @@
 /* eslint-disable prettier/prettier */
+/* eslint-disable prefer-const */
+/* eslint-disable prettier/prettier */
 import { HttpException, HttpStatus, Injectable} from '@nestjs/common';
 import { Model } from 'mongoose';
 import { User, UserDocument } from 'src/schemas/user';
@@ -52,8 +54,44 @@ export class UserService {
         let postId = data.postId;
         let userObj = this.userModel.findById(usrId)
         let list1 = (await userObj).bookmarks
-        list1.push(postId)
-        let list = {"bookmarks":list1}
-        return this.userModel.findByIdAndUpdate(usrId, list);
+        if (list1.indexOf(postId)<0){
+            list1.push(postId)
+            let list = {"bookmarks":list1}
+            return this.userModel.findByIdAndUpdate(usrId, list);
+        }else{
+            list1.splice(list1.indexOf(postId), 1);
+            let list = {"bookmarks":list1}
+            return this.userModel.findByIdAndUpdate(usrId, list);
+        }
     }
+
+    async cgangePsw(data): Promise<any> {
+        let usrId = data.userId;
+        let oldPsw = data.oldPsw;
+        let newPsw = data.newPsw;
+        let newPswRepeat = data.newPswRepeat;
+
+        let userObject = this.userModel.findById(usrId)
+        let password = (await userObject).password
+        if (password !== oldPsw) {
+            throw new HttpException({
+                status: HttpStatus.CONFLICT,
+                errorText: "Неверно указан текущий пароль"
+            }, HttpStatus.CONFLICT)
+        } if (newPsw !== newPswRepeat) {
+            throw new HttpException({
+                status: HttpStatus.CONFLICT,
+                errorText: "Новый пароль не совпадает с повтором"
+            }, HttpStatus.CONFLICT)
+        }else {
+            let newPsW = {"password":newPsw}
+            return this.userModel.findByIdAndUpdate(usrId, newPsW);
+        }      
+    }
+
+    async getUserBooks(id): Promise<any> {
+        let userObj = this.userModel.findById(id);
+        let list = (await userObj).bookmarks 
+        return list 
+    } 
 }

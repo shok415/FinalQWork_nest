@@ -1,4 +1,6 @@
 /* eslint-disable prettier/prettier */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable prettier/prettier */
 import { Body, Controller, Get, HttpException, HttpStatus, Param, Post } from '@nestjs/common';
 import { User } from 'src/schemas/user';
 import { UserService } from 'src/services/user/user.service';
@@ -16,13 +18,16 @@ export class UserController {
     @Post("/bookmark")
     addToBookmark(@Body() data: any): Promise<any>  {
         this.userService.addBookMark(data);
-        return data;
-             
+        return this.userService.getUserById(data.userId); 
+    }
+
+    @Post("/changepsw")
+    cgangePsw(@Body() data: any): Promise<any>  {
+        return this.userService.cgangePsw(data); 
     }
 
     @Post()
     sendUser(@Body() data: User): Promise<User> {
- 
         return this.userService.checkRegUser(data.login).then((queryRes) => {
             console.log('data reg', queryRes)
             if (queryRes.length === 0) {
@@ -49,5 +54,8 @@ export class UserController {
         return this.userService.getUserById(id);
     }
 
-
+    @Get("/bookmarks/:id")
+    getUserBooks(@Param('id') id): Promise<User> {
+        return this.userService.getUserBooks(id);
+    }
 }

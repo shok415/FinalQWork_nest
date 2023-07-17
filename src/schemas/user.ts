@@ -14,7 +14,10 @@ export class User implements IUser {
  
     @Prop() email: string
 
-    @Prop() id: string   
+    @Prop() id: string
     
     @Prop() bookmarks: Array<any>
+    
+    @Prop() registrationDate:string
+    
  }   export const UserSchema = SchemaFactory.createForClass(User);
